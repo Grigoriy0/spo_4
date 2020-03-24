@@ -3,6 +3,7 @@
 #include<stdio.h>
 #include"thread.h"
 #include<thread>
+#include<iostream>
 
 DWORD WINAPI thread(LPVOID arg) {
 	if (*(int*)arg == 555)
@@ -13,21 +14,26 @@ DWORD WINAPI thread(LPVOID arg) {
 }
 
 
-HANDLE create_mutex() {
-	HANDLE mutex = CreateMutex(nullptr, false, "MyMutex");
-	
-	
-	return mutex;
-}
 
-void foo(int) {};
+
+
+
+
+
+
+void foo(int num, double) {
+	printf("%d", num);
+
+}
 
 int main() {
 		
-	Thread<void, int> MyThead(false, &foo, 5);
-
-	std::tuple<std::decay_t<int>, std::decay_t<double>> _tu_args;
-	_tu_args._Myfirst._Val;
-
+	//Thread<void, int> MyThead(&foo, 5);
+	for (int i = 0; i < 100; ++i)
+		printf("%d\n", 0);
+	system("pause");
+	
+	call<void(*)(int, double), std::tuple<int, double>>(foo, std::make_tuple<int, double>(5, 7.8));
+	
 	return 0;
 }
