@@ -154,7 +154,7 @@ private:
 		    call<retT(*)(argT...), std::tuple<argT...>>(ptr->_f, ptr->_tu_args);
 		    ptr->_finished = true;
 #ifdef WIN_OS
-            exitThread(0);
+			ExitThread(0);
 			return 0;
 #elif defined(LIN_OS)
             pthread_exit(nullptr);
