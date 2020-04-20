@@ -19,7 +19,7 @@
 #define PRINT_ERROR
 
 #ifdef WIN_OS
-    #define eror_number GetLastError()
+    #define error_number GetLastError()
 #elif defined LIN_OS
     #define error_number errno
 #endif

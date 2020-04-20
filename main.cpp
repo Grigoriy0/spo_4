@@ -75,7 +75,7 @@ int main() {
 	
 	vars::time_to_end_handle = CreateEvent(NULL, true, true, "WorkEvent");
 	if (vars::time_to_end_handle == NULL)
-		_perror("Warning! threads will be closed by hard way ");
+		print_error("Warning! threads will be closed by hard way ");
 	
 	while (checkInput());
 	
