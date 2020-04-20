@@ -2,38 +2,73 @@
 
 #include"mythread.h"
 
-
-
 #ifndef MY_MUTEX_H
 #define MY_MUTEX_H
+
 class Mutex
 {
 public:
-	Mutex(const std::string &name) {
-		if ((_handle = CreateMutex(NULL, true, name.c_str())) == NULL ) {
-			_perror("CreateMutex failed");
+	Mutex(
+#if defined(WIN_OS)
+            const std::string &name
+#endif // windows CreateMutex requares a name
+            ) {
+#if defined(WIN_OS)
+		if ((_handle = CreateMutex(NULL, true, name.c_str())) == 0) {
+			print_error("CreateMutex failed ");
 		}
+#elif defined(LIN_OS)
+        if (pthread_mutexattr_init(&_attr) != 0){
+            print_error("pthread_mutexattr_init failed ");
+        }
+        if (pthread_mutex_init(&_mu, nullptr) != 0){
+            print_error("pthread_mutex_init failed ");
+        }
+#endif
 	}
 
 	void wait() {
-		if (WaitForSingleObject(_handle, INFINITE) == WAIT_FAILED) {
-			_perror("WaitForSingleOnject failed");
+#if defined(WIN_OS)
+        if (WaitForSingleObject(_handle, INFINITE) == WAIT_FAILED) {
+			print_error("WaitForSingleOnject failed ");
 		}
+#elif defined(LIN_OS)
+        if (pthread_mutex_lock(&_mu) != 0){
+            print_error("pthread_mutex_lock failed ");
+        }
+#endif
 	}
 
 	void release() {
-		if (ReleaseMutex(_handle) == NULL) {
-			_perror("ReleaseMutex failed");
+#if defined(WIN_OS)
+        if (ReleaseMutex(_handle) == NULL) {
+			print_error("ReleaseMutex failed ");
 		}
+#elif defined(LIN_OS)
+        if (pthread_mutex_lock(&_mu) != 0){
+            print_error("pthread_mutex_lock failed ");
+        }
+#endif
 	}
 
 	~Mutex() {
+#if defined(WIN_OS)
 		if (CloseHandle(_handle) == NULL) {
-			_perror("CloseHandle failed");
+			print_error("CloseHandle failed ");
 		}
+#elif defined(LIN_OS)
+        if (pthread_mutex_destroy(&_mu) != 0){
+            print_error("pthread_mutex_destroy failed ");
+        }
+#endif
 	}
 private:
+#ifdef WIN_OS
 	HANDLE _handle;
+#elif defined(LIN_OS)
+    pthread_mutex_t _mu;
+    pthread_mutexattr_t _attr;
+#endif
 };
 
 

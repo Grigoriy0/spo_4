@@ -12,18 +12,18 @@ namespace vars {
 
 	static HANDLE time_to_end_handle; // in enabled state while user don't press 'q'
 	static Mutex mutex = Mutex("PrintDataMutex");
-
 	static std::vector<void*> threads;
 }
 
 
 void thread_function(int uniqueNum) {
-	std::string message = std::to_string(uniqueNum) + " Hello from thread " + std::to_string(GetCurrentThreadId()) + '\n';
+	std::string message = std::to_string(uniqueNum) + " Hello from thread " + std::to_string(GetCurrentThreadId());
 	while (true) {
 		MutexLocker locker(&vars::mutex);
 		if (WaitForSingleObject(vars::time_to_end_handle, 0) == WAIT_TIMEOUT) // user said "It's time to finish"
 			break;
-		for (int i = 0; i < message.size(); ++i){
+		putchar('\n');
+		for (unsigned i = 0; i < message.size(); ++i){
 			putchar(message[i]);
 			Sleep(100);
 		}
@@ -84,7 +84,7 @@ int main() {
 		vars::mutex.wait();
 	for (void* ptr : vars::threads) {
 		Thread<void, int> *th = (Thread<void, int>*)ptr;
-		if (!th->isEnds())// if WorkEvent works, then some threads may be finished
+		if (!th->isFinished())// if WorkEvent works, then some threads may be finished
 			th->cancel();
 	}
 	printf("\nAll threads was canceled\n");
