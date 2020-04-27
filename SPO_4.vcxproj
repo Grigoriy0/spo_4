@@ -126,7 +126,9 @@
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="thread.h" />
+    <ClInclude Include="defines.h" />
+    <ClInclude Include="mymutex.h" />
+    <ClInclude Include="mythread.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

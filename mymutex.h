@@ -1,6 +1,6 @@
 #include<string>
 
-#include"mythread.h"
+#include"defines.h"
 
 #ifndef MY_MUTEX_H
 #define MY_MUTEX_H
@@ -50,6 +50,7 @@ public:
         }
 #endif
 	}
+
 
 	~Mutex() {
 #if defined(WIN_OS)

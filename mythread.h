@@ -3,6 +3,7 @@
 
 
 #include"defines.h"
+#include"mymutex.h"
 
 #if not defined MY_THREAD_H
 #define MY_THREAD_H
@@ -52,10 +53,21 @@ public:
         if (_handle == NULL)
 			print_error("CreateThread failed ");
 #elif defined(LIN_OS)
-        if(pthread_create(&_thread_id, nullptr, (void*(*)(void*))_Launch, this) == -1)
+        if (pthread_create(&_thread_id, nullptr, (void*(*)(void*))_Launch, this) == -1)
             print_error("pthread_create failed ");
 #endif
 	}
+
+#ifdef LIN_OS
+	explicit Thread(Mutex *mu, retT(*f)(argT...), argT...args) {
+		_f = f;
+		_tu_args = std::tuple<argT...>(args...);
+        pthread_attr_t attr;
+        pthread_attr_init(&attr);
+        if (pthread_create(&_thread_id, &attr, (void*(*)(void*))_Launch, mu) == -1)
+            print_error("pthread_create failed ");
+	}
+#endif
 
 	void start() {
 #ifdef WIN_OS
